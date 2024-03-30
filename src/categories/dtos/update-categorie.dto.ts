@@ -16,18 +16,13 @@ class Event {
   value: number;
 }
 
-export class CreateCategorieDto {
+export class UpdateCategorieDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)
-  readonly name: string;
-
-  @IsNotEmpty()
-  @MinLength(10)
-  @MaxLength(300)
   description: string;
-
-  @IsArray()
-  @ArrayMinSize(1)
-  events: Array<Event>;
+  
+ @IsArray()
+ @ArrayMinSize(1)
+ events: Array<Event>;
 }

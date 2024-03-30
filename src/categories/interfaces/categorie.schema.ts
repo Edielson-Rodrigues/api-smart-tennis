@@ -1,9 +1,9 @@
 import { Schema } from "mongoose";
 
 const Events = {
-  name: { type: String },
-  operation: { type: String },
-  value: { type: Number }
+  name: String,
+  operation: String,
+  value: Number
 }
 
 export const CategorieSchema = new Schema({
@@ -14,4 +14,4 @@ export const CategorieSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Player'
   }]
-}, { timestamps: true, collection: 'categories' }); 
+}, { timestamps: true, collection: 'categories' });

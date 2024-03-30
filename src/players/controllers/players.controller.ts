@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, Valid
 import { CreatePlayerDto } from '../dtos/create-player.dto';
 import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { PlayersService } from '../services/players.service';
-import { PlayersValidation } from '../pipes/players-validation';
+import { ObjectIdValidationPipe } from 'src/helpers/pipes/objectid.pipe';
 
 @Controller('players')
 export class PlayersController {
@@ -27,19 +27,19 @@ export class PlayersController {
     return result;
   }
 
-  @Put('/:email')
+  @Put('/:_id')
   @UsePipes(ValidationPipe)
   async updatePlayer(
     @Body() player: UpdatePlayerDto,
-    @Param('email', PlayersValidation) email: string)
+    @Param('_id', ObjectIdValidationPipe) _id: string)
   {
-    const result = await this.playersService.updatePlayer(email, player);
+    const result = await this.playersService.updatePlayer(_id, player);
     return result;
   }
 
-  @Delete()
-  async deletePlayer(@Query('email', PlayersValidation) email: string) {
-    const result = await this.playersService.deletePlayer(email);
+  @Delete('/:_id')
+  async deletePlayer(@Param('_id', ObjectIdValidationPipe) _id: string) {
+    const result = await this.playersService.deletePlayer(_id);
     return result;
   }
 }
