@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { ObjectId } from 'mongodb';
 import { PlayerFindWithEmailType, PlayerFindWithIdType } from '../types/player.find.type';
-import { AppError } from 'src/helpers/errors/app.error';
+import { AppError } from 'src/utils/errors/app.error';
 
 @Injectable()
 export class PlayersService {
@@ -17,15 +17,14 @@ export class PlayersService {
   async createPlayer(player: CreatePlayerDto): Promise<{ status: number, data: Player }> {
     try {
       if (await this.validationPlayerExists(player.email, player.phoneNumber)) {
-        throw new BadRequestException(player, 'Player already exists');
+        throw new BadRequestException('Player already exists');
       }
       const playerCreated = new this.playerModel(player);
       await playerCreated.save();
       return { status: 1, data: playerCreated }
     } catch (error) {
       this.logger.error(`Failed to create player: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to create player', this.createPlayer.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to create player', PlayersService.name, this.createPlayer.name, error.statusCode ?? 400);
     }
   }
 
@@ -34,15 +33,14 @@ export class PlayersService {
       return await this.playerModel.find(where).exec();
     } catch (error) {
       this.logger.error(`Failed to get players: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to get players', this.getPlayerByAttributes.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to get players', PlayersService.name, this.getPlayerByAttributes.name, error.statusCode ?? 400);
     }
   }
 
   async updatePlayer(_id: string, player: UpdatePlayerDto): Promise<{ status: number, data: Player, message?: string }> {
     try {
       if (!await this.validationPlayerExists(_id)) {
-        throw new NotFoundException(player, 'Player does not exists');
+        throw new NotFoundException('Player does not exists');
       }
       const playerUpdated = await this.playerModel.findOneAndUpdate(
         { _id },
@@ -51,8 +49,7 @@ export class PlayersService {
       return { status: 1, data: playerUpdated }
     } catch (error) {
       this.logger.error(`Failed to update player: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to update player', this.updatePlayer.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to update player', PlayersService.name, this.updatePlayer.name, error.statusCode ?? 400);
     }
   }
 
@@ -61,34 +58,31 @@ export class PlayersService {
       return await this.playerModel.find().exec();
     } catch (error) {
       this.logger.error(`Failed to get players: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to get players', this.getAllPlayers.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to get players', PlayersService.name, this.getAllPlayers.name, error.statusCode ?? 400);
     }
   }
 
   async deletePlayer(_id: string): Promise<{ status: number, data: Player }> {
     try {
       if (!await this.validationPlayerExists(_id)) {
-        throw new NotFoundException(_id, 'Player does not exists');
+        throw new NotFoundException('Player does not exists');
       }
       const playerDeleted = await this.playerModel.findOneAndDelete({ _id }).exec();
       return { status: 1, data: playerDeleted }
     } catch (error) {
       this.logger.error(`Failed to delete player: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to delete player', this.deletePlayer.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to delete player', PlayersService.name, this.deletePlayer.name, error.statusCode ?? 400);
     }
   }
 
-  private async validationPlayerExists(emailOrId: string, phoneNumber?: string): Promise<boolean> {
+  async validationPlayerExists(emailOrId: string, phoneNumber?: string): Promise<boolean> {
     try {
       const queryParams = this.getQueryParams(ObjectId.isValid(emailOrId), emailOrId, phoneNumber);      
       const foundPlayer = await this.playerModel.findOne(queryParams).exec();
       return Boolean(foundPlayer);
     } catch (error) {
       this.logger.error(`Failed to validate player: ${error}`);
-      if (error instanceof HttpException) throw error;
-      throw new AppError(error.message || 'Failed to validate player', this.validationPlayerExists.name, error.statusCode ?? 400);
+      throw new AppError(error.message || 'Failed to validate player', PlayersService.name, this.validationPlayerExists.name, error.statusCode ?? 400);
     }
   }
 

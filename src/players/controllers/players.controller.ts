@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePlayerDto } from '../dtos/create-player.dto';
 import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { PlayersService } from '../services/players.service';
-import { ObjectIdValidationPipe } from 'src/helpers/pipes/objectid.pipe';
+import { ObjectIdValidationPipe } from 'src/utils/pipes/objectid.pipe';
+import { HttpExceptionFilter } from 'src/utils/filters/http-exception.filter';
+
 
 @Controller('players')
 export class PlayersController {
@@ -10,18 +12,21 @@ export class PlayersController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @UseFilters(new HttpExceptionFilter())
   async createPlayer(@Body() player: CreatePlayerDto) {
     const result = await this.playersService.createPlayer(player);
     return result;
   }
 
   @Get('/getForAttributes')
+  @UseFilters(new HttpExceptionFilter())
   async getPlayerByAttributes(@Query() queryParams: any) {
     const result = await this.playersService.getPlayerByAttributes(queryParams);
     return result;
   }
 
   @Get()
+  @UseFilters(new HttpExceptionFilter())
   async getAllPlayers() {
     const result = await this.playersService.getAllPlayers();
     return result;
@@ -29,6 +34,7 @@ export class PlayersController {
 
   @Put('/:_id')
   @UsePipes(ValidationPipe)
+  @UseFilters(new HttpExceptionFilter())
   async updatePlayer(
     @Body() player: UpdatePlayerDto,
     @Param('_id', ObjectIdValidationPipe) _id: string)
@@ -38,6 +44,7 @@ export class PlayersController {
   }
 
   @Delete('/:_id')
+  @UseFilters(new HttpExceptionFilter())
   async deletePlayer(@Param('_id', ObjectIdValidationPipe) _id: string) {
     const result = await this.playersService.deletePlayer(_id);
     return result;
