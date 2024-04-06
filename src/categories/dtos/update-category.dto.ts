@@ -17,7 +17,7 @@ class Event {
   value: number;
 }
 
-export class UpdateCategorieDto {
+export class UpdateCategoryDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)

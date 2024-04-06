@@ -6,7 +6,7 @@ const Events = {
   value: Number
 }
 
-export const CategorieSchema = new Schema({
+export const CategorySchema = new Schema({
   name: { type: String, unique: true },
   description: String,
   events: [Events],

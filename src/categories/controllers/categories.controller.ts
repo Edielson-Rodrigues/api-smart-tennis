@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, HttpException, Param, Post, Put, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
-import { CreateCategorieDto } from '../dtos/create-categorie.dto';
+import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { ObjectIdValidationPipe } from 'src/utils/pipes/objectid.pipe';
-import { UpdateCategorieDto } from '../dtos/update-categorie.dto';
+import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { HttpExceptionFilter } from '../../utils/filters/http-exception.filter';
 
 @Controller('categories')
@@ -12,18 +12,18 @@ export class CategoriesController {
   @Post()
   @UsePipes(ValidationPipe)
   @UseFilters(new HttpExceptionFilter())
-  async createCategorie(@Body() categorie: CreateCategorieDto) {
-    const result = await this.categoriesService.createCategorie(categorie);
+  async createCategory(@Body() category: CreateCategoryDto) {
+    const result = await this.categoriesService.createCategory(category);
     return result;
   }
 
   @Put('/:_id')
   @UsePipes(ValidationPipe)
   @UseFilters(new HttpExceptionFilter())
-  async updateCategorie(
-    @Body() categorie: UpdateCategorieDto,
+  async updateCategory(
+    @Body() category: CreateCategoryDto,
     @Param('_id', ObjectIdValidationPipe) _id: string) {
-    const result = await this.categoriesService.updateCategorie(_id, categorie);
+    const result = await this.categoriesService.updateCategory(_id, category);
     return result;
   }
 
@@ -36,24 +36,24 @@ export class CategoriesController {
 
   @Get('/:_id')
   @UseFilters(new HttpExceptionFilter())
-  async getCategorieById(@Param('_id', ObjectIdValidationPipe) _id: string) {
-    const result = await this.categoriesService.getCategorieById(_id);
+  async getCategoryById(@Param('_id', ObjectIdValidationPipe) _id: string) {
+    const result = await this.categoriesService.getCategoryById(_id);
     return result;
   }
 
   @Delete('/:_id')
   @UseFilters(new HttpExceptionFilter())
-  async deleteCategorie(@Param('_id', ObjectIdValidationPipe) _id: string) {
-    const result = await this.categoriesService.deleteCategorie(_id);
+  async deleteCategory(@Param('_id', ObjectIdValidationPipe) _id: string) {
+    const result = await this.categoriesService.deleteCategory(_id);
     return result;
   }
 
   @Post('/assign-player/:_idCategoria/:_idJogador')
   @UseFilters(new HttpExceptionFilter())
-  async assignPlayerInCategorie(
+  async assignPlayerInCategory(
     @Param('_idCategoria', ObjectIdValidationPipe) _idCategoria: string,
     @Param('_idJogador', ObjectIdValidationPipe) _idJogador: string) {
-      const result = await this.categoriesService.assignPlayerInCategorie(_idCategoria, _idJogador);
+      const result = await this.categoriesService.assignPlayerInCategory(_idCategoria, _idJogador);
       return result;
   }
 }

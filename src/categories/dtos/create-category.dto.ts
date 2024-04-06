@@ -16,7 +16,7 @@ class Event {
   value: number;
 }
 
-export class CreateCategorieDto {
+export class CreateCategoryDto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)

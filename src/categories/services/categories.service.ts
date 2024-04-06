@@ -1,9 +1,9 @@
 import { Injectable, BadRequestException, NotFoundException,  HttpException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Categorie } from '../interfaces/categorie.interface';
+import { Category } from '../interfaces/category.interface';
 import { Model } from 'mongoose';
-import { CreateCategorieDto } from '../dtos/create-categorie.dto';
-import { UpdateCategorieDto } from '../dtos/update-categorie.dto';
+import { CreateCategoryDto } from '../dtos/create-category.dto';
+import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { ObjectId } from 'mongodb';
 import { AppError } from '../../utils/errors/app.error';
 import { PlayersService } from 'src/players/services/players.service';
@@ -13,84 +13,84 @@ export class CategoriesService {
   private readonly logger = new Logger(CategoriesService.name);
   
   constructor(
-    @InjectModel('Categorie') private readonly categorieModel: Model<Categorie>,
+    @InjectModel('Category') private readonly categoryModel: Model<Category>,
     private readonly playersService: PlayersService
   ) { }
 
-  async createCategorie(categorie: CreateCategorieDto): Promise<{ status: number, data: Categorie}> {
+  async createCategory(category: CreateCategoryDto): Promise<{ status: number, data: Category}> {
     try {
-        if (await this.validationCategorieExists(categorie.name)) {
+        if (await this.validationCategoryExists(category.name)) {
           throw new BadRequestException('Category already exists');
         }
-       const categorieCreated = new this.categorieModel(categorie);
+       const categorieCreated = new this.categoryModel(category);
        await categorieCreated.save();
        return { status: 1, data: categorieCreated};
     } catch(error) {
-      this.logger.error(`Failed to create categorie: ${error}`);
-      throw new AppError(error.message || 'Failed to create categorie', CategoriesService.name, this.createCategorie.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to create category: ${error}`);
+      throw new AppError(error.message || 'Failed to create category', CategoriesService.name, this.createCategory.name, error.statusCode ?? 400);
     }
   }
 
-  async updateCategorie(_id: string, categorie: UpdateCategorieDto): Promise<{ status: number, data: Categorie}> { 
+  async updateCategory(_id: string, category: UpdateCategoryDto): Promise<{ status: number, data: Category}> { 
     try {
-      if (!await this.validationCategorieExists(_id)) {
-        throw new NotFoundException('Categorie not found');
+      if (!await this.validationCategoryExists(_id)) {
+        throw new NotFoundException('Category not found');
       }
-      const categorieUpdated = await this.categorieModel.findOneAndUpdate(
+      const categorieUpdated = await this.categoryModel.findOneAndUpdate(
         { _id },
-        categorie, { new: true }
+        category, { new: true }
       ).exec();
       return { status: 1, data: categorieUpdated };
     } catch(error) {
-      this.logger.error(`Failed to update categorie: ${error}`);
-      throw new AppError(error.message || 'Failed to update categorie', CategoriesService.name, this.updateCategorie.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to update category: ${error}`);
+      throw new AppError(error.message || 'Failed to update category', CategoriesService.name, this.updateCategory.name, error.statusCode ?? 400);
     }
   }
 
-  async deleteCategorie(_id: string): Promise<{ status: number, data: Categorie }> {
+  async deleteCategory(_id: string): Promise<{ status: number, data: Category }> {
     try {
-      if (!await this.validationCategorieExists(_id)) {
-        throw new BadRequestException('Categorie not found');
+      if (!await this.validationCategoryExists(_id)) {
+        throw new BadRequestException('Category not found');
       }
-      const categorieDeleted = await this.categorieModel.findOneAndDelete({ _id }).exec();
+      const categorieDeleted = await this.categoryModel.findOneAndDelete({ _id }).exec();
       return { status: 1, data: categorieDeleted };
     } catch(error) {
-      this.logger.error(`Failed to delete categorie: ${error}`);
-      throw new AppError(error.message || 'Failed to delete categorie', CategoriesService.name, this.deleteCategorie.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to delete category: ${error}`);
+      throw new AppError(error.message || 'Failed to delete category', CategoriesService.name, this.deleteCategory.name, error.statusCode ?? 400);
     }
   }
 
-  async getAllCategories(): Promise<Categorie[]> {
+  async getAllCategories(): Promise<Category[]> {
     try {
-      return await this.categorieModel.find().populate('players').exec();
+      return await this.categoryModel.find().populate('players').exec();
     } catch(error) {
       this.logger.error(`Failed to get all categories: ${error}`);
       throw new AppError(error.message || 'Failed to get all categories', CategoriesService.name, this.getAllCategories.name, error.statusCode ?? 400);
     }
   }
 
-  async getCategorieById(_id: string): Promise<Categorie[]> {
+  async getCategoryById(_id: string): Promise<Category[]> {
     try {
-      return this.categorieModel.find({ _id }).populate("players").exec();
+      return this.categoryModel.find({ _id }).populate("players").exec();
     } catch(error) {
-      this.logger.error(`Failed to get categorie by id: ${error}`);
-      throw new AppError(error.message || 'Failed to get categorie by id', CategoriesService.name, this.getCategorieById.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to get category by id: ${error}`);
+      throw new AppError(error.message || 'Failed to get category by id', CategoriesService.name, this.getCategoryById.name, error.statusCode ?? 400);
     }
   }
 
-  async assignPlayerInCategorie(_idCategorie: string, _idJogador: string): Promise<{ status: number }> {
+  async assignPlayerInCategory(_idCategorie: string, _idJogador: string): Promise<{ status: number }> {
     try {
       const [ verifyCategorie, verifyPlayer, verifyassignCategoriePlayer ] = await Promise.all([
-        this.validationCategorieExists(_idCategorie),
+        this.validationCategoryExists(_idCategorie),
         this.playersService.validationPlayerExists(_idJogador),
-        this.categorieModel.findOne().where('players').in([_idJogador]).exec()
+        this.categoryModel.findOne().where('players').in([_idJogador]).exec()
       ]);
       
       if (!verifyCategorie) throw new NotFoundException('Categorie not found');
       if (!verifyPlayer) throw new NotFoundException('Player not found');
       if (verifyassignCategoriePlayer) throw new BadRequestException('Player already assigned to a category');
 
-      await this.categorieModel.findOneAndUpdate(
+      await this.categoryModel.findOneAndUpdate(
         { _id: _idCategorie },
         { $addToSet: { players: _idJogador } },
         { new: true }, 
@@ -98,19 +98,19 @@ export class CategoriesService {
 
       return { status: 1 };
     } catch (error) {
-      this.logger.error(`Failed to assign player in categorie: ${error}`);
-      throw new AppError(error.message || 'Failed to assign player in categorie', CategoriesService.name, this.assignPlayerInCategorie.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to assign player in category: ${error}`);
+      throw new AppError(error.message || 'Failed to assign player in category', CategoriesService.name, this.assignPlayerInCategory.name, error.statusCode ?? 400);
     }
   }
 
-  async validationCategorieExists(chave: string): Promise<boolean> {
+  async validationCategoryExists(chave: string): Promise<boolean> {
     try {
       const queryParams = this.getQueryParams(ObjectId.isValid(chave), chave);
-      const categorieFound = await this.categorieModel.findOne(queryParams).exec();
+      const categorieFound = await this.categoryModel.findOne(queryParams).exec();
       return Boolean(categorieFound);
     } catch(error) {
-      this.logger.error(`Failed to validate categorie exists: ${error}`);
-      throw new AppError(error.message || 'Failed to validate categorie exists', CategoriesService.name, this.validationCategorieExists.name, error.statusCode ?? 400);
+      this.logger.error(`Failed to validate category exists: ${error}`);
+      throw new AppError(error.message || 'Failed to validate category exists', CategoriesService.name, this.validationCategoryExists.name, error.statusCode ?? 400);
     }
   }
 
