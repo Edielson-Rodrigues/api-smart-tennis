@@ -1,17 +1,16 @@
-import { Schema } from "mongoose";
-
-const Events = {
-  name: String,
-  operation: String,
-  value: Number
-}
+import { Schema } from 'mongoose';
 
 export const CategorySchema = new Schema({
-  name: { type: String, unique: true },
-  description: String,
-  events: [Events],
+  name: { type: String, unique: true, required: true },
+  description: { type: String, required: true },
+  events: [{
+    name: String,
+    operation: String,
+    value: Number
+  }],
   players: [{
     type: Schema.Types.ObjectId,
     ref: 'Player'
-  }]
-}, { timestamps: true, collection: 'categories' });
+  }],
+}, { timestamps: true, collection: 'categories' 
+});

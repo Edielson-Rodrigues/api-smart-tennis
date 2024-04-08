@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters, Use
 import { CreatePlayerDto } from '../dtos/create-player.dto';
 import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { PlayersService } from '../services/players.service';
-import { ObjectIdValidationPipe } from 'src/utils/pipes/objectid.pipe';
+import { ObjectIdPipe } from 'src/utils/pipes/objectid.pipe';
 import { HttpExceptionFilter } from 'src/utils/filters/http-exception.filter';
 
 
@@ -37,7 +37,7 @@ export class PlayersController {
   @UseFilters(new HttpExceptionFilter())
   async updatePlayer(
     @Body() player: UpdatePlayerDto,
-    @Param('_id', ObjectIdValidationPipe) _id: string)
+    @Param('_id', ObjectIdPipe) _id: string)
   {
     const result = await this.playersService.updatePlayer(_id, player);
     return result;
@@ -45,7 +45,7 @@ export class PlayersController {
 
   @Delete('/:_id')
   @UseFilters(new HttpExceptionFilter())
-  async deletePlayer(@Param('_id', ObjectIdValidationPipe) _id: string) {
+  async deletePlayer(@Param('_id', ObjectIdPipe) _id: string) {
     const result = await this.playersService.deletePlayer(_id);
     return result;
   }

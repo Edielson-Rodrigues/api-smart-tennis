@@ -1,4 +1,4 @@
-import { HttpException, NotFoundException, BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { NotFoundException, BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreatePlayerDto } from '../dtos/create-player.dto';
 import { Player } from '../interfaces/player.interface';
 import { Model } from 'mongoose';
@@ -7,6 +7,7 @@ import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { ObjectId } from 'mongodb';
 import { PlayerFindWithEmailType, PlayerFindWithIdType } from '../types/player.find.type';
 import { AppError } from 'src/utils/errors/app.error';
+
 
 @Injectable()
 export class PlayersService {
@@ -75,11 +76,13 @@ export class PlayersService {
     }
   }
 
-  async validationPlayerExists(emailOrId: string, phoneNumber?: string): Promise<boolean> {
+  async validationPlayerExists(emailOrId: string | string[], phoneNumber?: string): Promise<boolean> {
     try {
-      const queryParams = this.getQueryParams(ObjectId.isValid(emailOrId), emailOrId, phoneNumber);      
-      const foundPlayer = await this.playerModel.findOne(queryParams).exec();
-      return Boolean(foundPlayer);
+      const findMany = Array.isArray(emailOrId);
+      const queryParams = findMany ? { _id: { $in: emailOrId } } : this.getQueryParams(ObjectId.isValid(emailOrId), emailOrId, phoneNumber);     
+      const foundPlayer = await this.playerModel.find(queryParams).exec();
+      const result = findMany ? foundPlayer.length === emailOrId.length : Boolean(foundPlayer.length);
+      return result;
     } catch (error) {
       this.logger.error(`Failed to validate player: ${error}`);
       throw new AppError(error.message || 'Failed to validate player', PlayersService.name, this.validationPlayerExists.name, error.statusCode ?? 400);

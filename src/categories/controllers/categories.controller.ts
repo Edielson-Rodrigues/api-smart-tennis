@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
-import { ObjectIdValidationPipe } from 'src/utils/pipes/objectid.pipe';
+import { ObjectIdPipe } from 'src/utils/pipes/objectid.pipe';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { HttpExceptionFilter } from '../../utils/filters/http-exception.filter';
 
@@ -21,8 +21,8 @@ export class CategoriesController {
   @UsePipes(ValidationPipe)
   @UseFilters(new HttpExceptionFilter())
   async updateCategory(
-    @Body() category: CreateCategoryDto,
-    @Param('_id', ObjectIdValidationPipe) _id: string) {
+    @Body() category: UpdateCategoryDto,
+    @Param('_id', ObjectIdPipe) _id: string) {
     const result = await this.categoriesService.updateCategory(_id, category);
     return result;
   }
@@ -36,14 +36,14 @@ export class CategoriesController {
 
   @Get('/:_id')
   @UseFilters(new HttpExceptionFilter())
-  async getCategoryById(@Param('_id', ObjectIdValidationPipe) _id: string) {
+  async getCategoryById(@Param('_id', ObjectIdPipe) _id: string) {
     const result = await this.categoriesService.getCategoryById(_id);
     return result;
   }
 
   @Delete('/:_id')
   @UseFilters(new HttpExceptionFilter())
-  async deleteCategory(@Param('_id', ObjectIdValidationPipe) _id: string) {
+  async deleteCategory(@Param('_id', ObjectIdPipe) _id: string) {
     const result = await this.categoriesService.deleteCategory(_id);
     return result;
   }
@@ -51,8 +51,8 @@ export class CategoriesController {
   @Post('/assign-player/:_idCategoria/:_idJogador')
   @UseFilters(new HttpExceptionFilter())
   async assignPlayerInCategory(
-    @Param('_idCategoria', ObjectIdValidationPipe) _idCategoria: string,
-    @Param('_idJogador', ObjectIdValidationPipe) _idJogador: string) {
+    @Param('_idCategoria', ObjectIdPipe) _idCategoria: string,
+    @Param('_idJogador', ObjectIdPipe) _idJogador: string) {
       const result = await this.categoriesService.assignPlayerInCategory(_idCategoria, _idJogador);
       return result;
   }

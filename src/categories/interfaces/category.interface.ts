@@ -1,15 +1,9 @@
-import { Document } from 'mongoose';
-import { Player } from 'src/players/interfaces/player.interface';
+import { Document, ObjectId } from 'mongoose';
 
 export interface Category extends Document {
   readonly name: string;
   description: string;
-  events: Array<Event>;
-  players: Array<Player>;
-}
-
-interface Event {
-  name: string;
-  operation: string;
-  value: number;
+  events: Array<ObjectId>;
+  players: Array<ObjectId>;
+  math: ObjectId;
 }

@@ -4,10 +4,11 @@ import { PlayersService } from './services/players.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PlayerSchema } from './interfaces/player.schema';
 
+
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Player', schema: PlayerSchema }])],
   controllers: [PlayersController],
   providers: [PlayersService],
   exports: [PlayersService]
 })
-export class PlayerModule {}
+export class PlayersModule {}

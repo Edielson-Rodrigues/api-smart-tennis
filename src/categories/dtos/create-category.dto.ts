@@ -1,4 +1,5 @@
-import { ArrayMinSize, IsAlphanumeric, IsArray, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ArrayMinSize, IsAlphanumeric, IsArray, IsNotEmpty, IsNumber, MaxLength, MinLength, ValidateNested } from 'class-validator';
 
 class Event {
   @IsNotEmpty()
@@ -12,7 +13,7 @@ class Event {
   operation: string;
 
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsNumber()
   value: number;
 }
 
@@ -27,6 +28,8 @@ export class CreateCategoryDto {
   @MaxLength(300)
   description: string;
 
+  @ValidateNested({ each: true })
+  @Type(() => Event)
   @IsArray()
   @ArrayMinSize(1)
   events: Array<Event>;
