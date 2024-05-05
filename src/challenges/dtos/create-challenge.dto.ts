@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, IsDateString, IsNotEmpty, Validate } from 'class-validator';
+import { IsDateString, IsNotEmpty, Validate } from 'class-validator';
 import { ObjectIdValidator } from 'src/utils/validations/objectid.validator';
 
 export class CreateChallengeDto {
