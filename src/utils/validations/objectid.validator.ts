@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 
 @ValidatorConstraint({ name: 'ObjectId', async: false })
 export class ObjectIdValidator implements ValidatorConstraintInterface {
-  validate(value: string, args: ValidationArguments) {
+  validate(value: string, args: ValidationArguments): boolean {
     return ObjectId.isValid(value);
   }
 

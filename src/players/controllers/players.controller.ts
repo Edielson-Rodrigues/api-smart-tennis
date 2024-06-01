@@ -2,13 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters, Use
 import { CreatePlayerDto } from '../dtos/create-player.dto';
 import { UpdatePlayerDto } from '../dtos/update-player.dto';
 import { PlayersService } from '../services/players.service';
-import { ObjectIdPipe } from 'src/utils/pipes/objectid.pipe';
+import { ObjectIdPipe } from 'src/utils/pipes/objectId.pipe';
 import { HttpExceptionFilter } from 'src/utils/filters/http-exception.filter';
-
 
 @Controller('players')
 export class PlayersController {
-  constructor(private readonly playersService: PlayersService) { }
+  constructor(
+    private readonly playersService: PlayersService
+  ) {}
 
   @Post()
   @UsePipes(ValidationPipe)

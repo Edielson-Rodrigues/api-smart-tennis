@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
-import { ObjectIdPipe } from 'src/utils/pipes/objectid.pipe';
+import { ObjectIdPipe } from 'src/utils/pipes/objectId.pipe';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { HttpExceptionFilter } from '../../utils/filters/http-exception.filter';
 

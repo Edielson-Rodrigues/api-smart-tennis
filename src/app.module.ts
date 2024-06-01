@@ -4,8 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config'; // TODO: tentar usar na conexão com o banco
 import { CategoriesModule } from './categories/categories.module';
 import { ChallengesModule } from './challenges/challenges.module';
-import { MathsModule } from './maths/maths.module';
-
 import 'dotenv/config';
 
 @Module({
@@ -15,7 +13,6 @@ import 'dotenv/config';
     PlayersModule,
     CategoriesModule,
     ChallengesModule,
-    MathsModule,
   ],
   controllers: [],
   providers: [],

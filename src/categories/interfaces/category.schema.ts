@@ -12,5 +12,4 @@ export const CategorySchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Player'
   }],
-}, { timestamps: true, collection: 'categories' 
-});
+}, { timestamps: true, collection: "categories" });

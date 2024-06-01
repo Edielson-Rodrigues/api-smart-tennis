@@ -24,7 +24,7 @@ export class CategoriesService {
         }
        const categorieCreated = new this.categoryModel(category);
        await categorieCreated.save();
-       return { status: 1, data: categorieCreated};
+       return { status: 1, data: categorieCreated };
     } catch(error) {
       this.logger.error(`Failed to create category: ${error}`);
       throw new AppError(error.message || 'Failed to create category', CategoriesService.name, this.createCategory.name, error.statusCode ?? 400);
@@ -80,13 +80,13 @@ export class CategoriesService {
 
   async assignPlayerInCategory(_idCategorie: string, _idJogador: string): Promise<{ status: number }> {
     try {
-      const [ verifyCategorie, verifyPlayer, verifyassignCategoriePlayer ] = await Promise.all([
+      const [ verifyCategorie, verifyPlayer,  verifyassignCategoriePlayer ] = await Promise.all([
         this.validationCategoryExists(_idCategorie),
         this.playersService.validationPlayerExists(_idJogador),
         this.categoryModel.findOne().where('players').in([_idJogador]).exec()
       ]);
       
-      if (!verifyCategorie) throw new NotFoundException('Categorie not found');
+      if (!verifyCategorie) throw new NotFoundException('Category not found');
       if (!verifyPlayer) throw new NotFoundException('Player not found');
       if (verifyassignCategoriePlayer) throw new BadRequestException('Player already assigned to a category');
 
@@ -103,9 +103,9 @@ export class CategoriesService {
     }
   }
 
-  async validationCategoryExists(chave: string): Promise<boolean> {
+  async validationCategoryExists(key: string): Promise<boolean> {
     try {
-      const queryParams = this.getQueryParams(ObjectId.isValid(chave), chave);
+      const queryParams = this.getQueryParams(ObjectId.isValid(key), key);
       const categorieFound = await this.categoryModel.findOne(queryParams).exec();
       return Boolean(categorieFound);
     } catch(error) {
@@ -114,7 +114,7 @@ export class CategoriesService {
     }
   }
 
-  private getQueryParams(isObjectIdValid: boolean, chave: string): { _id: string } | { name: string } {
-    return isObjectIdValid ? { _id: chave } : { name: chave };
+  private getQueryParams(isObjectIdValid: boolean, key: string): { _id: string } | { name: string } {
+    return isObjectIdValid ? { _id: key } : { name: key };
   }
 }

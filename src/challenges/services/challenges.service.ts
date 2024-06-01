@@ -1,12 +1,11 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Challenge } from '../interfaces/challenge.interface';
-import { CreateChallengeDto } from '../dtos/create-challenge.dto';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { CategoriesService } from 'src/categories/services/categories.service';
 import { PlayersService } from 'src/players/services/players.service';
+import { CreateChallengeDto } from '../dtos/challenger.create';
 import { AppError } from 'src/utils/errors/app.error';
-
 
 @Injectable()
 export class ChallengesService {
@@ -14,25 +13,31 @@ export class ChallengesService {
 
   constructor(
     @InjectModel('Challenge') private readonly challengeModel: Model<Challenge>,
-    private readonly playersService: PlayersService,
-    private readonly categoriesService: CategoriesService
+    private readonly categoriesService: CategoriesService,
+    private readonly playersService: PlayersService
   ) {}
 
-  async createChallenge(challenge: CreateChallengeDto): Promise<{ status: number, data: Challenge}> {
-    try { 
-      const [ verifyCategory, verifyPlayers ] = await Promise.all([
+  async createChallenge(challenge: CreateChallengeDto): Promise<{ status: number, data: Challenge }> {
+    try {
+      const [ categorieExists, challengerExists, challengedExists ] = await Promise.all([
         this.categoriesService.validationCategoryExists(challenge.category),
-        this.playersService.validationPlayerExists([challenge.challenger, challenge.challenged])
+        this.playersService.validationPlayerExists(challenge.challenger),
+        this.playersService.validationPlayerExists(challenge.challenged)
       ]);
-      if (!verifyCategory) throw new NotFoundException('Category does not exists');
-      if (!verifyPlayers) throw new NotFoundException('One or more players does not exists');
-      
-      const challengedCreated = new this.challengeModel(challenge);
-      await challengedCreated.save();
 
-      return { status: 1, data: challengedCreated } 
+      if (!categorieExists) throw new NotFoundException('Category not found');
+      if (!challengerExists) throw new NotFoundException('Challenger not found');
+      if (!challengedExists) throw new NotFoundException('Challenged not found');
+
+      challenge.status = 'SENT';
+      challenge.dateTimeSent = new Date();
+
+      const challengeCreated = new this.challengeModel(challenge);
+      await challengeCreated.save();
+
+      return { status: 1, data: challengeCreated };
     } catch (error) {
-      this.logger.error(error.message || `Failed to create challenge: ${error}`);
+      this.logger.error(`Falied to create challenge: ${error}`)
       throw new AppError(error.message || 'Failed to create challenge', ChallengesService.name, this.createChallenge.name, error.statusCode ?? 400);
     }
   }

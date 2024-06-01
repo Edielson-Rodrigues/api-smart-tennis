@@ -1,22 +1,14 @@
 import { Document } from "mongoose";
-import { ObjectId } from "mongoose";
-
-enum ChallengeStatus {
-  DONE = 'DONE',
-  PENDING = 'PENDING',
-  ACCEPTED = 'ACCEPTED',
-  REFUSED = 'REFUSED',
-  CANCELED = 'CANCELED',
-}
-
+import { STATUS_CHALLENGE } from "../types/challenge.status.type";
 
 export interface Challenge extends Document {
-  readonly categorie: ObjectId;
-  readonly challenger: ObjectId;
-  readonly challenged: ObjectId;
-  readonly dateTimeRequest: Date;
-  readonly dateTimeReply: Date;
-  dateTimeChallenge: Date;
-  status: ChallengeStatus;
-  match: ObjectId;
+  name: string,
+  description: string;
+  status: STATUS_CHALLENGE;
+  category: string;
+  challenger: string;
+  challenged: string;
+  dateTimeSent: string;
+  dateTimeResponse: string;
+  dateTimeChallenge: string;
 }

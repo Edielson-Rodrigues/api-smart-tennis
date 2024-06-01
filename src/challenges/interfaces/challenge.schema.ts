@@ -1,21 +1,41 @@
 import { Schema } from "mongoose";
 
-// data hora de requisição: createdAt
-// data hora de resposta: updatedAt
 export const ChallengeSchema = new Schema({
-  dateTimeChallenge: Date,
-  status: String,
-  categorie: {
-    type: Schema.Types.ObjectId,
-    ref: 'Category'
+  status: { 
+    type: String, 
+    enum: ["SENT", "REALIZED", "REJECT_FOR_THE_CHALLENGER", "CANCELED_FOR_THE_CHALLENGED"],
+    requerid: true,
+    default: "SENT"
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true,
   },
   challenger: {
     type: Schema.Types.ObjectId,
-    ref: 'Player'
+    ref: "Player",
   },
-  players: [{
+  challenged: {
     type: Schema.Types.ObjectId,
-    ref: 'Player'
-  }]
-}, { timestamps: true, collection: 'challenges' });
-
+    ref: "Player"
+  },
+  categorie: {
+    type: Schema.Types.ObjectId,
+    ref: "Category"
+  },
+  dateTimeSent: {
+    type: Schema.Types.Date,
+  },
+  dateTimeResponse: {
+    type: Schema.Types.Date,
+    default: null
+  },
+  dateTimeChallenge: {
+    type: Schema.Types.Date,
+    required: true
+  }
+}, { timestamps: true, collection: "challenges" });
