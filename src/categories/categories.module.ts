@@ -10,6 +10,7 @@ import { GetCategoryByIdService } from './services/GetCategoryById.service';
 import { UpdateCategoryService } from './services/UpdateCategory.service';
 import { ValidationCategoryExistsService } from './services/ValidationCategoryExists.service';
 import { AssignPlayerInCategoryService } from './services/AssignPlayerInCategory.service';
+import { GetCategoryByIdPlayerService } from './services/GetCategoryByIdPlayer.service';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Category', schema: CategorySchema }]), PlayersModule],
@@ -21,8 +22,12 @@ import { AssignPlayerInCategoryService } from './services/AssignPlayerInCategory
     GetCategoryByIdService,
     UpdateCategoryService,
     ValidationCategoryExistsService,
-    AssignPlayerInCategoryService
+    AssignPlayerInCategoryService,
+    GetCategoryByIdPlayerService
   ],
-  exports: [],
+  exports: [
+    ValidationCategoryExistsService,
+    GetCategoryByIdPlayerService
+  ],
 })
 export class CategoriesModule {}

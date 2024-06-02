@@ -5,6 +5,7 @@ import { Model } from "mongoose";
 import { AppError } from "src/utils/errors/app.error";
 import { ValidationCategoryExistsService } from "./ValidationCategoryExists.service";
 import { ValidationPlayerExistsService } from "src/players/services/ValidationPlayerExists.service";
+import { GetCategoryByIdPlayerService } from "./GetCategoryByIdPlayer.service";
 
 @Injectable()
 export class AssignPlayerInCategoryService {
@@ -13,15 +14,16 @@ export class AssignPlayerInCategoryService {
   constructor(
     @InjectModel('Category') private readonly categoryModel: Model<Category>,
     private readonly validationCategoryExistsService: ValidationCategoryExistsService,
-    private readonly validationPlayerExistsService: ValidationPlayerExistsService
+    private readonly validationPlayerExistsService: ValidationPlayerExistsService,
+    private readonly getCategoryByIdPlayerService: GetCategoryByIdPlayerService
   ) {}
 
-  async execute(_idCategory: string, _idPlayer): Promise<{ status: number }> {
+  async execute(_idCategory: string, _idPlayer: string): Promise<{ status: number }> {
     try {
       const [ verifyCategorie, verifyPlayer,  verifyassignCategoriePlayer ] = await Promise.all([
         this.validationCategoryExistsService.execute(_idCategory),
         this.validationPlayerExistsService.execute(_idPlayer),
-        this.categoryModel.findOne().where('players').in([_idPlayer]).exec()
+        this.getCategoryByIdPlayerService.execute(_idPlayer)
       ]);
       
       if (!verifyCategorie) throw new NotFoundException('Category not found');
