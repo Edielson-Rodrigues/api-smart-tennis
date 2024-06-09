@@ -14,19 +14,19 @@ export class CreateChallengeService {
 
   constructor(
     @InjectModel("Challenge") private readonly challengeModel: Model<Challenge>,
-    private readonly validationCategoryExists: ValidationCategoryExistsService,
-    private readonly validationPlayerExists: ValidationPlayerExistsService,
-    private readonly getCategoryByIdPlayerService: GetCategoryByIdPlayerService
+    private readonly validationCategoryExistsService: ValidationCategoryExistsService,
+    private readonly validationPlayerExistsService: ValidationPlayerExistsService,
+    private readonly getCategoryByIdPlayerServiceService: GetCategoryByIdPlayerService
   ) {}
 
   async execute(challenge: CreateChallengeDto): Promise<{ status: number, data: Challenge }> {
     try {
       const [ categoryExists, challengerExists, challengedExists, categoryChallenger, categoryChallenged ] = await Promise.all([
-        this.validationCategoryExists.execute(challenge.category),
-        this.validationPlayerExists.execute(challenge.challenger),
-        this.validationPlayerExists.execute(challenge.challenged),
-        this.getCategoryByIdPlayerService.execute(challenge.challenger),
-        this.getCategoryByIdPlayerService.execute(challenge.challenged)
+        this.validationCategoryExistsService.execute(challenge.category),
+        this.validationPlayerExistsService.execute(challenge.challenger),
+        this.validationPlayerExistsService.execute(challenge.challenged),
+        this.getCategoryByIdPlayerServiceService.execute(challenge.challenger),
+        this.getCategoryByIdPlayerServiceService.execute(challenge.challenged)
       ]);
       
       if (!categoryExists) throw new NotFoundException("Category not found");

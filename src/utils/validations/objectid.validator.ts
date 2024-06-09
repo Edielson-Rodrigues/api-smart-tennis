@@ -1,9 +1,9 @@
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 import { ObjectId } from "mongodb";
 
-@ValidatorConstraint({ name: 'ObjectId', async: false })
+@ValidatorConstraint({ name: ObjectIdValidator.name, async: false })
 export class ObjectIdValidator implements ValidatorConstraintInterface {
-  validate(value: string, args: ValidationArguments): boolean {
+  validate(value: string, validationArguments: ValidationArguments): boolean {
     return ObjectId.isValid(value);
   }
 

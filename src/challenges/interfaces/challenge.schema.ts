@@ -3,7 +3,7 @@ import { Schema } from "mongoose";
 export const ChallengeSchema = new Schema({
   status: { 
     type: String, 
-    enum: ["SENT", "REALIZED", "REJECT_FOR_THE_CHALLENGER", "CANCELED_FOR_THE_CHALLENGED"],
+    enum: ["SENT", "REALIZED", "REJECT_FOR_THE_CHALLENGER", "CANCELED_FOR_THE_CHALLENGED", "ACCEPTED"],
     requerid: true,
     default: "SENT"
   },

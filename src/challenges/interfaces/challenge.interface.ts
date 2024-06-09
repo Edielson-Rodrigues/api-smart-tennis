@@ -8,7 +8,7 @@ export interface Challenge extends Document {
   category: string;
   challenger: string;
   challenged: string;
-  dateTimeSent: string;
-  dateTimeResponse: string;
+  dateTimeSent: Date;
+  dateTimeResponse: Date;
   dateTimeChallenge: string;
 }

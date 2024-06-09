@@ -1,6 +1,7 @@
 import { IsDateString, IsEmpty, IsNotEmpty, IsString, MaxLength, MinLength, Validate } from "class-validator";
-import { ObjectIdValidator } from "src/utils/validations/objectId.validator";
+import { ObjectIdValidator } from "src/utils/validations/ObjectId.validator";
 import { STATUS_CHALLENGE } from "../types/challenge.status.type";
+import { LaterDateValidator } from "src/utils/validations/LaterDate.validator";
 
 export class CreateChallengeDto {
   @IsString()
@@ -32,6 +33,7 @@ export class CreateChallengeDto {
 
   @IsNotEmpty()
   @IsDateString()
+  @Validate(LaterDateValidator)
   dateTimeChallenge: string;
 
   @IsEmpty()

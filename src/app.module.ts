@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PlayersModule } from './players/players.module';
 import { MongooseModule } from '@nestjs/mongoose'; 
-import { ConfigModule } from '@nestjs/config'; // TODO: tentar usar na conexão com o banco
+import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { ChallengesModule } from './challenges/challenges.module';
 import 'dotenv/config';
